@@ -4,51 +4,29 @@ import * as Yup from "yup";
 import axios from "axios";
 
 function UserForm() {
-    const [user, setUser] = useState({ name: '', email: '', password: ''});
-
-    const handleChange = event => {
-        setUser({ ...user, [event.target.name]: event.target.value });
-    };
-
-    const handleSubmit = event => {
-        event.preventDefault();
-        console.log(user.name);
-        console.log(user.email);
-        console.log(user.password);
-    };
     
     return (
         <div className='userForm'>
-            {console.log(user)}
-            <form onSubmit={event => handleSubmit(event)}>
-                <label>
-                    Name:
-                    <input
-                        type="text"
-                        name="name"
-                        onChange={event => handleChange(event)}
-                        />
-                </label>
-                <label>
-                    email:
-                    <input
-                        type="text"
-                        name="email"
-                        onChange={event => handleChange(event)}
-                        />
-                </label>
-                <label>
-                    Password:
-                    <input
-                        type="text"
-                        name="password"
-                        onChange={event => handleChange(event)}
-                        />
-                </label>
+            <Form>
+                    <Field type="text" name="name" placeholder="Name"/>
+                    <Field type="text" name="email" placeholder="email"/>
+                    <Field type="text" name="password" placeholder="Password"/>
                 <button>Submit</button>
-            </form>
+            </Form>
         </div>
     )
 }
 
-export default UserForm;
+const FormikUserForm = withFormik({
+    mapPropsToValues({ name, email, password }) {
+        return {
+            name: name || '',
+            email: email || '',
+            password: password || ''
+        }
+    },
+    handleSubmit(values) {
+        console.log(values);
+    }
+})(UserForm)
+export default FormikUserForm;
