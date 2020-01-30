@@ -3,44 +3,52 @@ import { withFormik, Form, Field } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 
-const UserForm = ({ values, errors, touched, status }) => {
-    const [user, setUser] = useState([]);
-    useEffect(() => {
-        status && setUser(user => [...user, status]);
-    }, [status]);
+function UserForm() {
+    const [user, setUser] = useState({ name: '', email: '', password: ''});
+
+    const handleChange = event => {
+        setUser({ ...user, [event.target.name]: event.target.value });
+    };
+
+    const handleSubmit = event => {
+        event.preventDefault();
+        console.log(user.name);
+        console.log(user.email);
+        console.log(user.password);
+    };
+    
     return (
-        <div className="user-form">
-            <Form>
-                <label htmlFor="name">
-                    Name
-                    <Field 
-                    id="name"
-                    type="text"
-                    name="name"
-                    placeholder="name"
-                    />
-                    {touched.name && errors.name (
-                        <p className="errors">{errors.name}</p>
-                    )}
+        <div className='userForm'>
+            {console.log(user)}
+            <form onSubmit={event => handleSubmit(event)}>
+                <label>
+                    Name:
+                    <input
+                        type="text"
+                        name="name"
+                        onChange={event => handleChange(event)}
+                        />
                 </label>
-                <label htmlFor="email">
-                    email
-                    <Field
-                    id="email"
-                    type="email"
-                    name="email"
-                    placeholder="email"
-                    />
-                    {touched.email && errors.email (
-                        <p className="errors">{errors.email}</p>
-                    )}
+                <label>
+                    email:
+                    <input
+                        type="text"
+                        name="email"
+                        onChange={event => handleChange(event)}
+                        />
                 </label>
-            </Form>
+                <label>
+                    Password:
+                    <input
+                        type="text"
+                        name="password"
+                        onChange={event => handleChange(event)}
+                        />
+                </label>
+                <button>Submit</button>
+            </form>
         </div>
     )
-
 }
-    
 
-
-
+export default UserForm;
