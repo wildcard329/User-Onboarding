@@ -3,7 +3,7 @@ import { withFormik, Form, Field } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 
-function UserForm({ values, errors, touched }) {
+function UserForm({ values, errors, touched, isSubmitting }) {
     
     return (
         <Form>
@@ -18,21 +18,22 @@ function UserForm({ values, errors, touched }) {
             <div>
                 {touched.password && errors.password && <p>{errors.password}</p>}
                 <Field type="text" name="password" placeholder="Password"/>
-                <button>Submit</button>
             </div>
-            <label>
-                <Field type="checkbox" name='ts' checked={values.ts} />
-                Accept ToS
-            </label>
+            <div>
+                <label>
+                    <Field type="checkbox" name='ts' checked={values.ts} />
+                    Accept ToS
+                </label>
+            </div>
+            <div>
+                <button disabled={isSubmitting}>Submit</button>
+            </div>
         </Form>
-        <div>
-
-        </div>
     )
 }
 
 const FormikUserForm = withFormik({
-    mapPropsToValues({ name, email, password }) {
+    mapPropsToValues({ name, email, password, ts }) {
         return {
             name: name || '',
             email: email || '',
@@ -50,7 +51,18 @@ const FormikUserForm = withFormik({
                 .min(6, 'Enter a password 6 characters or longer')
                 .required('Password required')
     }),
-    handleSubmit(values) {
+    handleSubmit(values, { resetForm, setErrors, setSubmitting }) {
+        if (values.email === "alreadytaken@atb.dev") {
+            setErrors({ email: "that email is already taken" });
+        } else {
+            axios
+                .post('https://reqres.in/api/users', values)
+                .then(res => {
+                    console.log(res);
+                    resetForm();
+                    setSubmitting(false);
+                });
+        }
         console.log(values);
     }
 })(UserForm)
